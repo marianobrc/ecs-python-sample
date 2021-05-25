@@ -27,6 +27,10 @@ Parameters:
     Type: Number
     Default: 512
     Description: How much memory in megabytes to give the container
+  ContainerName:
+    Type: String
+    Default: ecs-python-sample
+    Description: Container name used to reference an image from ECR in task definitions
   Path:
     Type: String
     Default: "*"
@@ -59,7 +63,7 @@ Resources:
   TaskDefinition:
     Type: AWS::ECS::TaskDefinition
     Properties:
-      Family: !Ref 'ServiceName'
+      Family: !Ref 'ContainerName'
       Cpu: !Ref 'ContainerCpu'
       Memory: !Ref 'ContainerMemory'
       NetworkMode: awsvpc
@@ -74,7 +78,7 @@ Resources:
           - !Ref 'Role'
           - !Ref "AWS::NoValue"
       ContainerDefinitions:
-        - Name: !Ref 'ServiceName'
+        - Name: !Ref 'ContainerName'
           Cpu: !Ref 'ContainerCpu'
           Memory: !Ref 'ContainerMemory'
           Image: !Ref 'ImageUrl'
@@ -109,7 +113,7 @@ Resources:
                 !Join [':', [!Ref 'StackName', 'PrivateSubnetTwo']]
       TaskDefinition: !Ref 'TaskDefinition'
       LoadBalancers:
-        - ContainerName: !Ref 'ServiceName'
+        - ContainerName: !Ref 'ContainerName'
           ContainerPort: !Ref 'ContainerPort'
           TargetGroupArn: !Ref 'TargetGroup'
 
